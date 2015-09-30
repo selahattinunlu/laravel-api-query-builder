@@ -1,0 +1,24 @@
+{
+    "name": "unlu/laravel-api-query-builder",
+    "description": "Laravel API Query Builder Package.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["laravel", "api"],
+    "authors": [
+        {
+            "name": "Selahattin Ünlü",
+            "email": "selahattin.unlu@yandex.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "laravel/framework": "5.1.*"
+    },
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {
+            "Unlu\\Laravel\\Api\\": "src"
+        }
+    },
+    "minimum-stability": "dev"
+}
