@@ -82,11 +82,6 @@ class UriParser
         return (in_array($key, $keys));
     }
 
-    public function query($key)
-    {
-        return $this->request->query($key);
-    }
-
     private function setQueryUri($uri)
     {
         $explode = explode('?', $uri);
