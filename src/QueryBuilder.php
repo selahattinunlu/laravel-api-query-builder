@@ -2,7 +2,6 @@
 
 // TODO: custom order by
 // TODO: multiple order by
-// TODO: groupBy
 
 namespace Unlu\Laravel\Api;
 
@@ -35,7 +34,9 @@ class QueryBuilder
 
     protected $includes = [];
 
-    protected $excepts = ['order', 'limit', 'page', 'columns', 'includes'];
+    protected $groupBy = [];
+
+    protected $excepts = ['order', 'group_by', 'limit', 'page', 'columns', 'includes'];
 
     protected $query;
 
@@ -100,12 +101,21 @@ class QueryBuilder
 
         $this->query->orderBy($column, $direction);
 
+        if ($this->hasGroupBy()) {
+            $this->query->groupBy($this->groupBy);
+        }
+
         return $this->query;
     }
 
     protected function hasWheres() 
     {
         return (count($this->wheres) > 0);
+    }
+
+    protected function hasGroupBy()
+    {
+        return (count($this->groupBy) > 0);
     }
 
     protected function setIncludes($includes)
@@ -143,6 +153,13 @@ class QueryBuilder
         return $this;
     }
 
+    protected function setGroupBy($groups)
+    {
+        $this->groupBy = explode(',', $groups);
+
+        return $this;
+    }
+
     protected function setLimit($limit) 
     {
         $this->limit = (int) $limit;
@@ -164,7 +181,7 @@ class QueryBuilder
 
     private function setterMethodName($key)
     {
-        return 'set' . mb_convert_case($key, MB_CASE_TITLE);
+        return 'set' . studly_case($key);
     }
 
     private function prepareExcept($exceptKey)
