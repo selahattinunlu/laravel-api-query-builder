@@ -46,12 +46,23 @@ class UriParser
 
     public function queryParameter($key)
     {
-        return $this->queryParameters[$key];
+        $keys = array_pluck($this->queryParameters, 'key');
+        
+        $queryParameters = array_combine($keys, $this->queryParameters);
+       
+        return $queryParameters[$key];
     }
 
     public function queryParametersExcept(array $excepts)
     {
-        return array_except($this->queryParameters, $excepts);
+        return array_filter(
+            $this->queryParameters, 
+            function($queryParameter) use ($excepts)
+            {
+                $key = $queryParameter['key'];
+                return (! in_array($key, $excepts));
+            }
+        );
     }
 
     public function hasQueryUri()
@@ -66,7 +77,9 @@ class UriParser
 
     public function hasQueryParameter($key)
     {
-        return (isset($this->queryParameters[$key]));
+        $keys = array_pluck($this->queryParameters, 'key');
+
+        return (in_array($key, $keys));
     }
 
     public function query($key)
@@ -105,7 +118,7 @@ class UriParser
             $value = str_replace('*', '%', $value);
         }
 
-        $this->queryParameters[$key] = [
+        $this->queryParameters[] = [
             'key' => $key,
             'operator' => $operator,
             'value' => $value
