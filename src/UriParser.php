@@ -100,10 +100,22 @@ class UriParser
 
         list($key, $value) = explode($operator, $parameter);
 
+        if ($this->isLikeQuery($value)) {
+            $operator = 'like';
+            $value = str_replace('*', '%', $value);
+        }
+
         $this->queryParameters[$key] = [
             'key' => $key,
             'operator' => $operator,
             'value' => $value
         ];
+    }
+
+    private function isLikeQuery($query)
+    {
+        $pattern = "/^\*|\*$/";
+
+        return (preg_match($pattern, $query, $matches));
     }
 }

@@ -1,8 +1,7 @@
 <?php 
 
 // TODO: custom order by
-// TODO: whereLike
-// TODO: whereBetwen
+// TODO: whereBetween
 
 namespace Unlu\Laravel\Api;
 
