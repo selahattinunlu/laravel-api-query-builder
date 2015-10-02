@@ -107,34 +107,34 @@ class QueryBuilder
         return $this->query;
     }
 
-    protected function hasWheres() 
+    private function hasWheres() 
     {
         return (count($this->wheres) > 0);
     }
 
-    protected function hasGroupBy()
+    private function hasGroupBy()
     {
         return (count($this->groupBy) > 0);
     }
 
-    protected function setIncludes($includes)
+    private function setIncludes($includes)
     {
         $this->includes = explode(',', $includes);
     }
 
-    protected function setPage($page)
+    private function setPage($page)
     {
         $this->page = (int) $page;
 
         $this->offset = ($page - 1) * $this->limit;
     }
 
-    protected function setColumns($columns)
+    private function setColumns($columns)
     {
         $this->columns = explode(',', $columns);
     }
 
-    protected function setOrderBy($order) 
+    private function setOrderBy($order) 
     {
         $this->orderBy = [];
 
@@ -143,7 +143,7 @@ class QueryBuilder
         array_map([$this, 'appendOrderBy'], $orders);
     }
 
-    protected function appendOrderBy($order)
+    private function appendOrderBy($order)
     {
         list($column, $direction) = explode(',', $order);
 
@@ -153,17 +153,17 @@ class QueryBuilder
         ]; 
     }
 
-    protected function setGroupBy($groups)
+    private function setGroupBy($groups)
     {
         $this->groupBy = explode(',', $groups);
     }
 
-    protected function setLimit($limit) 
+    private function setLimit($limit) 
     {
         $this->limit = (int) $limit;
     }
 
-    protected function setWheres($parameters) 
+    private function setWheres($parameters) 
     {
         $this->wheres = $parameters;
     }
