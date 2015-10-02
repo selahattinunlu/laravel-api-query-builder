@@ -16,14 +16,9 @@ class QueryBuilder
 
     protected $wheres = [];
 
-    protected $orderBy = [
-        [
-            'column' => 'id',
-            'direction' => 'desc'
-        ]
-    ];
+    protected $orderBy = [];
 
-    protected $limit = 15;
+    protected $limit;
 
     protected $page = 1;
 
@@ -43,6 +38,10 @@ class QueryBuilder
 
     public function __construct(Model $model, Request $request)
     {
+        $this->orderBy = config('api-query-builder.orderBy');
+
+        $this->limit = config('api-query-builder.limit');
+        
         $this->model = $model;
 
         $this->uriParser = new UriParser($request);
