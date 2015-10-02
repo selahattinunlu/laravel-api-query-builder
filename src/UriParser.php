@@ -10,6 +10,15 @@ class UriParser
     
     protected $pattern = '/!=|=|<=|<|>=|>/';
 
+    protected $constantParameters = [
+        'order_by', 
+        'group_by', 
+        'limit', 
+        'page', 
+        'columns', 
+        'includes'
+    ];
+
     protected $uri;
 
     protected $queryUri;
@@ -53,16 +62,21 @@ class UriParser
         return $queryParameters[$key];
     }
 
-    public function queryParametersExcept(array $excepts)
+    public function whereParameters()
     {
         return array_filter(
             $this->queryParameters, 
-            function($queryParameter) use ($excepts)
+            function($queryParameter)
             {
                 $key = $queryParameter['key'];
-                return (! in_array($key, $excepts));
+                return (! in_array($key, $this->constantParameters));
             }
         );
+    }
+
+    public function constantParameters()
+    {
+        return $this->constantParameters;
     }
 
     public function hasQueryUri()

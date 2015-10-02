@@ -37,8 +37,6 @@ class QueryBuilder
 
     protected $groupBy = [];
 
-    protected $excepts = ['order_by', 'group_by', 'limit', 'page', 'columns', 'includes'];
-
     protected $query;
 
     protected $result;
@@ -78,10 +76,10 @@ class QueryBuilder
     protected function prepare()
     {
         $this->setWheres(
-            $this->uriParser->queryParametersExcept($this->excepts)
+        $this->setWheres($this->uriParser->whereParameters());
         );
 
-        array_map([$this, 'prepareExcept'], $this->excepts);
+        array_map([$this, 'prepareConstants'], $this->uriParser->constantParameters());
 
         return $this;
     }
@@ -178,7 +176,7 @@ class QueryBuilder
         return 'set' . studly_case($key);
     }
 
-    private function prepareExcept($exceptKey)
+    private function prepareConstants($exceptKey)
     {
         if (! $this->uriParser->hasQueryParameter($exceptKey)) return;
 
