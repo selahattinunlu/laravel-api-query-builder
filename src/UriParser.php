@@ -122,7 +122,7 @@ class UriParser
 
         list($key, $value) = explode($operator, $parameter);
 
-        if ($this->isLikeQuery($value)) {
+        if (! $this->isConstantParameter($key) && $this->isLikeQuery($value)) {
             $operator = 'like';
             $value = str_replace('*', '%', $value);
         }
@@ -139,5 +139,10 @@ class UriParser
         $pattern = "/^\*|\*$/";
 
         return (preg_match($pattern, $query, $matches));
+    }
+
+    private function isConstantParameter($key)
+    {
+        return (in_array($key, $this->constantParameters));
     }
 }
