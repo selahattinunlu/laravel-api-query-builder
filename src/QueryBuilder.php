@@ -1,7 +1,6 @@
 <?php 
 
 // TODO: custom order by
-// TODO: multiple order by
 
 namespace Unlu\Laravel\Api;
 
@@ -20,8 +19,10 @@ class QueryBuilder
     protected $wheres = [];
 
     protected $orderBy = [
-        'column' => 'id',
-        'direction' => 'desc'
+        [
+            'column' => 'id',
+            'direction' => 'desc'
+        ]
     ];
 
     protected $limit = 15;
@@ -91,15 +92,13 @@ class QueryBuilder
             array_map([$this, 'addWhereToQuery'], $this->wheres);
         }
 
+        array_map([$this, 'addOrderByToQuery'], $this->orderBy);
+
         $this->query->select($this->columns);
 
         $this->query->with($this->includes);
 
         $this->query->skip($this->offset);
-
-        extract($this->orderBy);
-
-        $this->query->orderBy($column, $direction);
 
         if ($this->hasGroupBy()) {
             $this->query->groupBy($this->groupBy);
@@ -143,14 +142,23 @@ class QueryBuilder
 
     protected function setOrderBy($order) 
     {
-        list($column, $direction) = explode(',', $order);
+        $this->orderBy = [];
 
-        $this->orderBy = [
-            'column' => $column,
-            'direction' => $direction
-        ];
+        $orders = array_filter(explode('|', $order));
+
+        array_map([$this, 'appendOrderBy'], $orders);
 
         return $this;
+    }
+
+    protected function appendOrderBy($order)
+    {
+        list($column, $direction) = explode(',', $order);
+
+        $this->orderBy[] = [
+            'column' => $column,
+            'direction' => $direction
+        ]; 
     }
 
     protected function setGroupBy($groups)
@@ -208,6 +216,13 @@ class QueryBuilder
         }
 
         $this->query->where($key, $operator, $value);
+    }
+
+    private function addOrderByToQuery($order)
+    {
+        extract($order);
+
+        $this->query->orderBy($column, $direction);
     }
 
     private function hasCustomFilter($key)
