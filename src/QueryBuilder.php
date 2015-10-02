@@ -1,7 +1,5 @@
 <?php 
 
-// TODO: custom order by
-
 namespace Unlu\Laravel\Api;
 
 use Illuminate\Database\Eloquent\Model;
@@ -32,6 +30,8 @@ class QueryBuilder
     protected $offset = 0;
 
     protected $columns = ['*'];
+
+    protected $relationColumns = [];
 
     protected $includes = [];
 
@@ -81,6 +81,10 @@ class QueryBuilder
 
         array_map([$this, 'prepareConstants'], $this->uriParser->constantParameters());
 
+        if ($this->hasIncludes() && $this->hasRelationColumns()) {
+            $this->fixRelationColumns();
+        }
+
         return $this;
     }
 
@@ -105,9 +109,27 @@ class QueryBuilder
         return $this->query;
     }
 
+    // TODO: refactor
+    private function fixRelationColumns()
+    {
+        foreach ($this->relationColumns as $relationKey => $relationColumns) {
+            $index = array_search($relationKey, $this->includes);
+            unset($this->includes[$index]);
+
+            $this->includes[$relationKey] = function($q) use ($relationColumns) {
+                return $q->select($relationColumns);
+            };
+        }
+    }
+
     private function hasWheres() 
     {
         return (count($this->wheres) > 0);
+    }
+
+    private function hasIncludes()
+    {
+        return (count($this->includes) > 0);
     }
 
     private function hasGroupBy()
@@ -127,9 +149,32 @@ class QueryBuilder
         $this->offset = ($page - 1) * $this->limit;
     }
 
+    // TODO: refactor
     private function setColumns($columns)
     {
-        $this->columns = explode(',', $columns);
+        $columns = array_filter(explode(',', $columns));
+
+        $this->columns = [];
+        $this->relationColumns = [];
+
+        foreach ($columns as $column) {
+            if ($this->isRelationColumn($column)) {
+                list($key, $column) = explode('.', $column);
+                $this->relationColumns[$key][] = $column;
+            } else {
+                $this->columns[] = $column;
+            }
+        }
+    }
+
+    private function isRelationColumn($column)
+    {
+        return (count(explode('.', $column)) > 1);
+    }
+
+    private function hasRelationColumns()
+    {
+        return (count($this->relationColumns) > 0);
     }
 
     private function setOrderBy($order) 
