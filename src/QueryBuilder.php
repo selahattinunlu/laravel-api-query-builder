@@ -120,8 +120,6 @@ class QueryBuilder
     protected function setIncludes($includes)
     {
         $this->includes = explode(',', $includes);
-
-        return $this;
     }
 
     protected function setPage($page)
@@ -129,15 +127,11 @@ class QueryBuilder
         $this->page = (int) $page;
 
         $this->offset = ($page - 1) * $this->limit;
-
-        return $this;
     }
 
     protected function setColumns($columns)
     {
         $this->columns = explode(',', $columns);
-
-        return $this;
     }
 
     protected function setOrderBy($order) 
@@ -147,8 +141,6 @@ class QueryBuilder
         $orders = array_filter(explode('|', $order));
 
         array_map([$this, 'appendOrderBy'], $orders);
-
-        return $this;
     }
 
     protected function appendOrderBy($order)
@@ -164,22 +156,16 @@ class QueryBuilder
     protected function setGroupBy($groups)
     {
         $this->groupBy = explode(',', $groups);
-
-        return $this;
     }
 
     protected function setLimit($limit) 
     {
         $this->limit = (int) $limit;
-
-        return $this;
     }
 
     protected function setWheres($parameters) 
     {
         $this->wheres = $parameters;
-
-        return $this;
     }
 
     private function hasColumn($column)
@@ -242,7 +228,5 @@ class QueryBuilder
         $callback = [$this, $this->customFilterName($key)];
 
         $this->query = call_user_func($callback, $this->query, $value, $operator);
-
-        return $this;
     }
 }
