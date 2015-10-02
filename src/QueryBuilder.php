@@ -19,7 +19,7 @@ class QueryBuilder
 
     protected $wheres = [];
 
-    protected $order = [
+    protected $orderBy = [
         'column' => 'id',
         'direction' => 'desc'
     ];
@@ -36,7 +36,7 @@ class QueryBuilder
 
     protected $groupBy = [];
 
-    protected $excepts = ['order', 'group_by', 'limit', 'page', 'columns', 'includes'];
+    protected $excepts = ['order_by', 'group_by', 'limit', 'page', 'columns', 'includes'];
 
     protected $query;
 
@@ -97,7 +97,7 @@ class QueryBuilder
 
         $this->query->skip($this->offset);
 
-        extract($this->order);
+        extract($this->orderBy);
 
         $this->query->orderBy($column, $direction);
 
@@ -141,11 +141,11 @@ class QueryBuilder
         return $this;
     }
 
-    protected function setOrder($order) 
+    protected function setOrderBy($order) 
     {
         list($column, $direction) = explode(',', $order);
 
-        $this->order = [
+        $this->orderBy = [
             'column' => $column,
             'direction' => $direction
         ];
