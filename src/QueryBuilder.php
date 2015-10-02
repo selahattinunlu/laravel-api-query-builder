@@ -75,9 +75,7 @@ class QueryBuilder
 
     protected function prepare()
     {
-        $this->setWheres(
         $this->setWheres($this->uriParser->whereParameters());
-        );
 
         array_map([$this, 'prepareConstants'], $this->uriParser->constantParameters());
 
