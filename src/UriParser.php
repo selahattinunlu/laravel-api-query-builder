@@ -62,6 +62,11 @@ class UriParser
         return $queryParameters[$key];
     }
 
+    public function constantParameters()
+    {
+        return $this->constantParameters;
+    }
+
     public function whereParameters()
     {
         return array_filter(
@@ -74,9 +79,39 @@ class UriParser
         );
     }
 
-    public function constantParameters()
+    private function setQueryUri($uri)
     {
-        return $this->constantParameters;
+        $explode = explode('?', $uri);
+
+        $this->queryUri = (isset($explode[1])) ? rawurldecode($explode[1]) : null;
+    }
+
+    private function setQueryParameters($queryUri)
+    {
+        $queryParameters = array_filter(explode('&', $queryUri));
+
+        array_map([$this, 'appendQueryParameter'], $queryParameters);
+    }
+
+    private function appendQueryParameter($parameter)
+    {
+        preg_match($this->pattern, $parameter, $matches);
+
+        $operator = $matches[0];
+
+        list($key, $value) = explode($operator, $parameter);
+
+        if (! $this->isConstantParameter($key) && 
+            $this->isLikeQuery($value)) {
+            $operator = 'like';
+            $value = str_replace('*', '%', $value);
+        }
+
+        $this->queryParameters[] = [
+            'key' => $key,
+            'operator' => $operator,
+            'value' => $value
+        ];
     }
 
     public function hasQueryUri()
@@ -94,44 +129,6 @@ class UriParser
         $keys = array_pluck($this->queryParameters, 'key');
 
         return (in_array($key, $keys));
-    }
-
-    private function setQueryUri($uri)
-    {
-        $explode = explode('?', $uri);
-
-        $this->queryUri = (isset($explode[1])) ? rawurldecode($explode[1]) : null;
-
-        return $this;
-    }
-
-    private function setQueryParameters($queryUri)
-    {
-        $queryParameters = array_filter(explode('&', $queryUri));
-
-        array_map([$this, 'addQueryParameter'], $queryParameters);
-
-        return $this;
-    }
-
-    private function addQueryParameter($parameter)
-    {
-        preg_match($this->pattern, $parameter, $matches);
-
-        $operator = $matches[0];
-
-        list($key, $value) = explode($operator, $parameter);
-
-        if (! $this->isConstantParameter($key) && $this->isLikeQuery($value)) {
-            $operator = 'like';
-            $value = str_replace('*', '%', $value);
-        }
-
-        $this->queryParameters[] = [
-            'key' => $key,
-            'operator' => $operator,
-            'value' => $value
-        ];
     }
 
     private function isLikeQuery($query)

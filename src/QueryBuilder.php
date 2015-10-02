@@ -77,7 +77,9 @@ class QueryBuilder
     {
         $this->setWheres($this->uriParser->whereParameters());
 
-        array_map([$this, 'prepareConstants'], $this->uriParser->constantParameters());
+        $constantParameters = $this->uriParser->constantParameters();
+
+        array_map([$this, 'prepareConstants'], $constantParameters);
 
         if ($this->hasIncludes() && $this->hasRelationColumns()) {
             $this->fixRelationColumns();
@@ -92,47 +94,30 @@ class QueryBuilder
             array_map([$this, 'addWhereToQuery'], $this->wheres);
         }
 
-        array_map([$this, 'addOrderByToQuery'], $this->orderBy);
-
-        $this->query->select($this->columns);
-
-        $this->query->with($this->includes);
-
-        $this->query->skip($this->offset);
-
         if ($this->hasGroupBy()) {
             $this->query->groupBy($this->groupBy);
         }
 
+        array_map([$this, 'addOrderByToQuery'], $this->orderBy);
+
+        $this->query->with($this->includes);
+
+        $this->query->select($this->columns);
+
+        $this->query->skip($this->offset);
+
         return $this->query;
     }
 
-    // TODO: refactor
-    private function fixRelationColumns()
+    private function prepareConstants($exceptKey)
     {
-        foreach ($this->relationColumns as $relationKey => $relationColumns) {
-            $index = array_search($relationKey, $this->includes);
-            unset($this->includes[$index]);
+        if (! $this->uriParser->hasQueryParameter($exceptKey)) return;
 
-            $this->includes[$relationKey] = function($q) use ($relationColumns) {
-                return $q->select($relationColumns);
-            };
-        }
-    }
+        $callback = [$this, $this->setterMethodName($exceptKey)];
 
-    private function hasWheres() 
-    {
-        return (count($this->wheres) > 0);
-    }
+        $callbackParameter = $this->uriParser->queryParameter($exceptKey);
 
-    private function hasIncludes()
-    {
-        return (count($this->includes) > 0);
-    }
-
-    private function hasGroupBy()
-    {
-        return (count($this->groupBy) > 0);
+        call_user_func($callback, $callbackParameter['value']);
     }
 
     private function setIncludes($includes)
@@ -147,32 +132,54 @@ class QueryBuilder
         $this->offset = ($page - 1) * $this->limit;
     }
 
-    // TODO: refactor
     private function setColumns($columns)
     {
         $columns = array_filter(explode(',', $columns));
 
-        $this->columns = [];
-        $this->relationColumns = [];
+        $this->columns = $this->relationColumns = [];
 
-        foreach ($columns as $column) {
-            if ($this->isRelationColumn($column)) {
-                list($key, $column) = explode('.', $column);
-                $this->relationColumns[$key][] = $column;
-            } else {
-                $this->columns[] = $column;
-            }
+        array_map([$this, 'setColumn'], $columns);
+    }
+
+    private function setColumn($column)
+    {
+        if ($this->isRelationColumn($column)) {
+            return $this->appendRelationColumn($column);
         }
+
+        $this->columns[] = $column;
     }
 
-    private function isRelationColumn($column)
+    private function appendRelationColumn($column)
     {
-        return (count(explode('.', $column)) > 1);
+        list($key, $column) = explode('.', $column);
+
+        $this->relationColumns[$key][] = $column;
     }
 
-    private function hasRelationColumns()
+    private function fixRelationColumns()
     {
-        return (count($this->relationColumns) > 0);
+        $keys = array_keys($this->relationColumns);
+
+        $callback = [$this, 'fixRelationColumn'];
+
+        array_map($callback, $keys, $this->relationColumns);
+    }
+
+    private function fixRelationColumn($key, $columns)
+    {
+        $index = array_search($key, $this->includes);
+
+        unset($this->includes[$index]);
+
+        $this->includes[$key] = $this->closureRelationColumns($columns);
+    }
+
+    private function closureRelationColumns($columns)
+    {
+        return function($q) use ($columns) {
+            $q->select($columns);
+        };
     }
 
     private function setOrderBy($order) 
@@ -209,27 +216,6 @@ class QueryBuilder
         $this->wheres = $parameters;
     }
 
-    private function hasColumn($column)
-    {
-        return (Schema::hasColumn($this->model->getTable(), $column));
-    }
-
-    private function setterMethodName($key)
-    {
-        return 'set' . studly_case($key);
-    }
-
-    private function prepareConstants($exceptKey)
-    {
-        if (! $this->uriParser->hasQueryParameter($exceptKey)) return;
-
-        $callback = [$this, $this->setterMethodName($exceptKey)];
-
-        $callbackParameter = $this->uriParser->queryParameter($exceptKey);
-
-        call_user_func($callback, $callbackParameter['value']);
-    }
-
     private function addWhereToQuery($where)
     {
         extract($where);
@@ -252,6 +238,43 @@ class QueryBuilder
         $this->query->orderBy($column, $direction);
     }
 
+    private function applyCustomFilter($key, $operator, $value)
+    {
+        $callback = [$this, $this->customFilterName($key)];
+
+        $this->query = call_user_func($callback, $this->query, $value, $operator);
+    }
+
+    private function isRelationColumn($column)
+    {
+        return (count(explode('.', $column)) > 1);
+    }
+
+    private function hasWheres() 
+    {
+        return (count($this->wheres) > 0);
+    }
+
+    private function hasIncludes()
+    {
+        return (count($this->includes) > 0);
+    }
+
+    private function hasGroupBy()
+    {
+        return (count($this->groupBy) > 0);
+    }
+
+    private function hasRelationColumns()
+    {
+        return (count($this->relationColumns) > 0);
+    }
+
+    private function hasColumn($column)
+    {
+        return (Schema::hasColumn($this->model->getTable(), $column));
+    }
+
     private function hasCustomFilter($key)
     {
         $methodName = $this->customFilterName($key);
@@ -259,15 +282,13 @@ class QueryBuilder
         return (method_exists($this, $methodName));
     }
 
+    private function setterMethodName($key)
+    {
+        return 'set' . studly_case($key);
+    }
+
     private function customFilterName($key)
     {
         return 'filterBy' . studly_case($key);
-    }
-
-    private function applyCustomFilter($key, $operator, $value)
-    {
-        $callback = [$this, $this->customFilterName($key)];
-
-        $this->query = call_user_func($callback, $this->query, $value, $operator);
     }
 }
