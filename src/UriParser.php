@@ -38,21 +38,6 @@ class UriParser
         }
     }
 
-    public function pattern()
-    {
-        return $this->pattern;
-    }
-
-    public function queryUri()
-    {
-        return $this->queryUri;
-    }
-
-    public function queryParameters()
-    {
-        return $this->queryParameters;
-    }
-
     public function queryParameter($key)
     {
         $keys = array_pluck($this->queryParameters, 'key');

@@ -78,7 +78,7 @@ class QueryBuilder
 
         $constantParameters = $this->uriParser->constantParameters();
 
-        array_map([$this, 'prepareConstants'], $constantParameters);
+        array_map([$this, 'prepareConstant'], $constantParameters);
 
         if ($this->hasIncludes() && $this->hasRelationColumns()) {
             $this->fixRelationColumns();
@@ -108,20 +108,20 @@ class QueryBuilder
         return $this->query;
     }
 
-    private function prepareConstants($exceptKey)
+    private function prepareConstant($parameter)
     {
-        if (! $this->uriParser->hasQueryParameter($exceptKey)) return;
+        if (! $this->uriParser->hasQueryParameter($parameter)) return;
 
-        $callback = [$this, $this->setterMethodName($exceptKey)];
+        $callback = [$this, $this->setterMethodName($parameter)];
 
-        $callbackParameter = $this->uriParser->queryParameter($exceptKey);
+        $callbackParameter = $this->uriParser->queryParameter($parameter);
 
         call_user_func($callback, $callbackParameter['value']);
     }
 
     private function setIncludes($includes)
     {
-        $this->includes = explode(',', $includes);
+        $this->includes = array_filter(explode(',', $includes));
     }
 
     private function setPage($page)
@@ -149,9 +149,9 @@ class QueryBuilder
         $this->columns[] = $column;
     }
 
-    private function appendRelationColumn($column)
+    private function appendRelationColumn($keyAndColumn)
     {
-        list($key, $column) = explode('.', $column);
+        list($key, $column) = explode('.', $keyAndColumn);
 
         $this->relationColumns[$key][] = $column;
     }
@@ -202,7 +202,7 @@ class QueryBuilder
 
     private function setGroupBy($groups)
     {
-        $this->groupBy = explode(',', $groups);
+        $this->groupBy = array_filter(explode(',', $groups));
     }
 
     private function setLimit($limit) 
@@ -223,14 +223,14 @@ class QueryBuilder
             return $this->applyCustomFilter($key, $operator, $value);
         }
 
-        if (! $this->hasColumn($key)) {
+        if (! $this->hasTableColumn($key)) {
             throw new UnknownColumnException("Unknown column '{$key}'");
         }
 
         $this->query->where($key, $operator, $value);
     }
 
-    private function addOrderByToQuery($order)
+    private function addOrderByToQuery(array $order)
     {
         extract($order);
 
@@ -269,7 +269,7 @@ class QueryBuilder
         return (count($this->relationColumns) > 0);
     }
 
-    private function hasColumn($column)
+    private function hasTableColumn($column)
     {
         return (Schema::hasColumn($this->model->getTable(), $column));
     }
