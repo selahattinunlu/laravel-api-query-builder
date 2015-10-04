@@ -1,19 +1,42 @@
 # Laravel API Query Builder Package
 
-**Dikkat!**
-Bu paket henüz geliştirilme aşamasındadır.
+### English
 
-Bu paket, uri parametrelerinden eloquent query oluşturur.
+**Warning**
+
+This package continues to be developed.
+
+[1. Introduction](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Introduction)
+
+[2. Installation](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Installation)
+
+[3. Usage](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Usage)
+
+[4. Other Examples](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Other-Examples)
+
+[5. Constant Parameters](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Constant-Parameters)
+
+[6. Methods](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Methods)
+
+[7. Creating Custom Filter](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Creating-Custom-Filter)
+
+[8. Access Operator (=, !=, <, <=, >, >=)](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Access-Operator)
+
+### Türkçe
+
+**Dikkat!**
+
+Bu paket henüz geliştirilme aşamasındadır.
 
 [1. Nedir](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Nedir)
 
-[2. Diğer Kullanım Örnekleri](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Di%C4%9Fer-Kullan%C4%B1m-%C3%96rnekleri)
+[2. Kurulum](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Kurulum)
 
-[3. Sabit Parametreler](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Sabit-Parametreler)
+[3. Kullanım](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Kullan%C4%B1m)
 
-[4. Kurulum](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Kurulum)
+[4. Diğer Kullanım Örnekleri](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Di%C4%9Fer-Kullan%C4%B1m-%C3%96rnekleri)
 
-[5. Kullanım](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Kullan%C4%B1m)
+[5. Sabit Parametreler](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Sabit-Parametreler)
 
 [6. Methodlar](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Methodlar)
 
