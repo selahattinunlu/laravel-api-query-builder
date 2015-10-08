@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Unlu\Laravel\Api\Exceptions\UnknownColumnException;
 use Unlu\Laravel\Api\UriParser;
+use Exception;
 
 class QueryBuilder
 {
@@ -49,26 +50,57 @@ class QueryBuilder
         $this->query = $this->model->newQuery();
     }
 
-    public function get()
+    public function build()
     {
-        $query = $this->prepare()->build()->take($this->limit);
+        $this->prepare();
 
-        $this->result = $query->get();
+        if ($this->hasWheres()) {
+            array_map([$this, 'addWhereToQuery'], $this->wheres);
+        }
+
+        if ($this->hasGroupBy()) {
+            $this->query->groupBy($this->groupBy);
+        }
+
+        if ($this->hasLimit()) {
+            $this->query->take($this->limit);
+        }
+
+        if ($this->hasOffset()) {
+            $this->query->skip($this->offset);
+        }
+
+        array_map([$this, 'addOrderByToQuery'], $this->orderBy);
+
+        $this->query->with($this->includes);
+
+        $this->query->select($this->columns);
 
         return $this;
+    }
+
+    public function get()
+    {
+        $this->result = $this->query->get();
+
+        return $this->result;
     }
 
     public function paginate()
     {
-        $query = $this->prepare()->build();
+        if (! $this->hasLimit()) {
+            throw new Exception("You can't use unlimited option for pagination", 1);
+        }
 
-        $this->result = $query->paginate($this->limit);
+        $this->result = $this->query->paginate($this->limit);
 
-        return $this;
+        return $this->result;
     }
 
-    public function result()
+    public function lists($value, $key)
     {
+        $this->result = $this->query->lists($value, $key);
+
         return $this->result;
     }
 
@@ -85,27 +117,6 @@ class QueryBuilder
         }
 
         return $this;
-    }
-
-    protected function build()
-    {
-        if ($this->hasWheres()) {
-            array_map([$this, 'addWhereToQuery'], $this->wheres);
-        }
-
-        if ($this->hasGroupBy()) {
-            $this->query->groupBy($this->groupBy);
-        }
-
-        array_map([$this, 'addOrderByToQuery'], $this->orderBy);
-
-        $this->query->with($this->includes);
-
-        $this->query->select($this->columns);
-
-        $this->query->skip($this->offset);
-
-        return $this->query;
     }
 
     private function prepareConstant($parameter)
@@ -207,7 +218,9 @@ class QueryBuilder
 
     private function setLimit($limit) 
     {
-        $this->limit = (int) $limit;
+        $limit = ($limit == 'unlimited') ? null : (int) $limit;
+
+        $this->limit = $limit;
     }
 
     private function setWheres($parameters) 
@@ -262,6 +275,16 @@ class QueryBuilder
     private function hasGroupBy()
     {
         return (count($this->groupBy) > 0);
+    }
+
+    private function hasLimit()
+    {
+        return ($this->limit);
+    }
+
+    private function hasOffset()
+    {
+        return ($this->offset != 0);
     }
 
     private function hasRelationColumns()
