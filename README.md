@@ -2,10 +2,6 @@
 
 ### English
 
-**Warning**
-
-This package continues to be developed.
-
 [1. Introduction](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Introduction)
 
 [2. Installation](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Installation)
@@ -23,10 +19,6 @@ This package continues to be developed.
 [8. Access Operator (=, !=, <, <=, >, >=)](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Access-Operator)
 
 ### Türkçe
-
-**Dikkat!**
-
-Bu paket henüz geliştirilme aşamasındadır.
 
 [1. Nedir](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Nedir)
 
