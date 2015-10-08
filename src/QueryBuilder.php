@@ -81,9 +81,7 @@ class QueryBuilder
 
     public function get()
     {
-        $this->result = $this->query->get();
-
-        return $this->result;
+        return $this->query->get();
     }
 
     public function paginate()
@@ -92,16 +90,12 @@ class QueryBuilder
             throw new Exception("You can't use unlimited option for pagination", 1);
         }
 
-        $this->result = $this->query->paginate($this->limit);
-
-        return $this->result;
+        return $this->query->paginate($this->limit);
     }
 
     public function lists($value, $key)
     {
-        $this->result = $this->query->lists($value, $key);
-
-        return $this->result;
+        return $this->query->lists($value, $key);
     }
 
     protected function prepare()
