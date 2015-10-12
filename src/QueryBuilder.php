@@ -2,12 +2,13 @@
 
 namespace Unlu\Laravel\Api;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Unlu\Laravel\Api\Exceptions\UnknownColumnException;
 use Unlu\Laravel\Api\UriParser;
-use Exception;
 
 class QueryBuilder
 {
@@ -197,6 +198,11 @@ class QueryBuilder
 
     private function appendOrderBy($order)
     {
+        if ($order == 'random') {
+            $this->orderBy[] = 'random';
+            return;
+        }
+
         list($column, $direction) = explode(',', $order);
 
         $this->orderBy[] = [
@@ -237,8 +243,12 @@ class QueryBuilder
         $this->query->where($key, $operator, $value);
     }
 
-    private function addOrderByToQuery(array $order)
+    private function addOrderByToQuery($order)
     {
+        if ($order == 'random') {
+            return $this->query->orderBy(DB::raw('RAND()'));
+        }
+
         extract($order);
 
         $this->query->orderBy($column, $direction);
