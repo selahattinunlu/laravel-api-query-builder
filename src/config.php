@@ -9,6 +9,8 @@ return [
             'column' => 'id',
             'direction' => 'desc'
         ]
-    ]  
+    ],
+
+    'excludedParameters' => [],
 
 ];

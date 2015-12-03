@@ -34,6 +34,8 @@ class QueryBuilder
 
     protected $groupBy = [];
 
+    protected $excludedParameters = [];
+
     protected $query;
 
     protected $result;
@@ -43,7 +45,9 @@ class QueryBuilder
         $this->orderBy = config('api-query-builder.orderBy');
 
         $this->limit = config('api-query-builder.limit');
-        
+
+        $this->excludedParameters = array_merge($this->excludedParameters, config('api-query-builder.excludedParameters'));
+
         $this->model = $model;
 
         $this->uriParser = new UriParser($request);
@@ -232,6 +236,10 @@ class QueryBuilder
     {
         extract($where);
 
+        if ($this->isExcludedParameter($key)) {
+            return;
+        }
+
         if ($this->hasCustomFilter($key)) {
             return $this->applyCustomFilter($key, $operator, $value);
         }
@@ -264,6 +272,11 @@ class QueryBuilder
     private function isRelationColumn($column)
     {
         return (count(explode('.', $column)) > 1);
+    }
+
+    private function isExcludedParameter($key)
+    {
+        return in_array($key, $this->excludedParameters);
     }
 
     private function hasWheres() 
