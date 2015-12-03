@@ -18,6 +18,8 @@
 
 [8. Access Operator (=, !=, <, <=, >, >=)](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Access-Operator)
 
+[9. How do exclude parameters from queries?](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/9.-How-do-exclude-parameters-from-queries%3F)
+
 ### Türkçe
 
 [1. Nedir](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Nedir)
@@ -35,3 +37,5 @@
 [7. Özel Filtre Oluşturma](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/%C3%96zel-Filtre-Olu%C5%9Fturma)
 
 [8. Özel Filtreden Operatöre (=, !=, <, <=, >, >=) Erişme](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/%C3%96zel-Filtrede-Operat%C3%B6re-Eri%C5%9Fme)
+
+[9. Sorgularda bazı parametreleri hariç tutmak](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/9.-Sorgularda-baz%C4%B1-parametreleri-hari%C3%A7-tutmak)
