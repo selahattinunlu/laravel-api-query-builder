@@ -12,7 +12,9 @@
     ],
     "require": {
         "php": ">=5.4",
-        "laravel/framework": ">=5.0.0"
+        "illuminate/support": ">=5.0.0",
+        "illuminate/database": ">=5.0.0",
+        "illuminate/http": ">=5.0.0"
     },
     "require-dev": {},
     "autoload": {
