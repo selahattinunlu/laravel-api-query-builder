@@ -1,4 +1,4 @@
-# Laravel API Query Builder Package
+# Laravel & Lumen API Query Builder Package
 
 ### English
 
