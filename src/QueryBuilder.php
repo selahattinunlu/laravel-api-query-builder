@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Unlu\Laravel\Api\Exceptions\UnknownColumnException;
+use Unlu\Laravel\Api\Exceptions\EmptyColumnsException;
 use Unlu\Laravel\Api\UriParser;
 
 class QueryBuilder
@@ -148,17 +149,23 @@ class QueryBuilder
         $this->columns = $this->relationColumns = [];
 
         array_map([$this, 'setColumn'], $columns);
+
+        if( $this->hasColumns($columns) == 0) {
+            throw new EmptyColumnsException("Columns are empty");
+        }
     }
 
     private function setColumn($column)
     {
+    
         if ($this->isRelationColumn($column)) {
             return $this->appendRelationColumn($column);
         }
-        
+
         if (! $this->hasTableColumn($column)) {
             throw new UnknownColumnException("Unknown column '{$column}'");
         }
+
 
         $this->columns[] = $column;
     }
@@ -252,6 +259,7 @@ class QueryBuilder
             throw new UnknownColumnException("Unknown column '{$key}'");
         }
 
+
         $this->query->where($key, $operator, $value);
     }
 
@@ -306,6 +314,11 @@ class QueryBuilder
     private function hasOffset()
     {
         return ($this->offset != 0);
+    }
+
+    private function hasColumns($columns)
+    {
+        return (count($columns));
     }
 
     private function hasRelationColumns()
