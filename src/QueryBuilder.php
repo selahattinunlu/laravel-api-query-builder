@@ -155,6 +155,10 @@ class QueryBuilder
         if ($this->isRelationColumn($column)) {
             return $this->appendRelationColumn($column);
         }
+        
+        if (! $this->hasTableColumn($column)) {
+            throw new UnknownColumnException("Unknown column '{$column}'");
+        }
 
         $this->columns[] = $column;
     }
