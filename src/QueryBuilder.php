@@ -236,19 +236,33 @@ class QueryBuilder
     {
         extract($where);
 
+        // For array values (whereIn, whereNotIn)
+        if (isset($values)) {
+            $value = $values;
+        }
+        if (!isset($operator)) {
+            $operator = '';
+        }
+
         if ($this->isExcludedParameter($key)) {
             return;
         }
 
         if ($this->hasCustomFilter($key)) {
-            return $this->applyCustomFilter($key, $operator, $value);
+            return $this->applyCustomFilter($key, $operator, $value, $type);
         }
 
         if (! $this->hasTableColumn($key)) {
             throw new UnknownColumnException("Unknown column '{$key}'");
         }
 
-        $this->query->where($key, $operator, $value);
+        if ($type == 'In') {
+            $this->query->whereIn($key, $value);
+        } else if ($type == 'NotIn') {
+            $this->query->whereNotIn($key, $value);
+        } else {
+            $this->query->where($key, $operator, $value);
+        }
     }
 
     private function addOrderByToQuery($order)
@@ -262,11 +276,11 @@ class QueryBuilder
         $this->query->orderBy($column, $direction);
     }
 
-    private function applyCustomFilter($key, $operator, $value)
+    private function applyCustomFilter($key, $operator, $value, $type = 'Basic')
     {
         $callback = [$this, $this->customFilterName($key)];
 
-        $this->query = call_user_func($callback, $this->query, $value, $operator);
+        $this->query = call_user_func($callback, $this->query, $value, $operator, $type);
     }
 
     private function isRelationColumn($column)

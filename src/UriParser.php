@@ -10,6 +10,8 @@ class UriParser
     
     protected $pattern = '/!=|=|<=|<|>=|>/';
 
+    protected $arrayQueryPattern = '/(.*)\[\]/';
+
     protected $constantParameters = [
         'order_by', 
         'group_by', 
@@ -80,23 +82,65 @@ class UriParser
 
     private function appendQueryParameter($parameter)
     {
+        // whereIn expression
+        preg_match($this->arrayQueryPattern, $parameter, $arrayMatches);
+        if (count($arrayMatches) > 0) {
+            $this->appendQueryParameterAsWhereIn($parameter, $arrayMatches[1]);
+            return;
+        }
+
+        // basic where expression
+        $this->appendQueryParameterAsBasicWhere($parameter);
+    }
+
+    private function appendQueryParameterAsBasicWhere($parameter)
+    {
         preg_match($this->pattern, $parameter, $matches);
 
         $operator = $matches[0];
 
         list($key, $value) = explode($operator, $parameter);
 
-        if (! $this->isConstantParameter($key) && 
-            $this->isLikeQuery($value)) {
+        if (! $this->isConstantParameter($key) && $this->isLikeQuery($value)) {
             $operator = 'like';
             $value = str_replace('*', '%', $value);
         }
 
         $this->queryParameters[] = [
+            'type' => 'Basic',
             'key' => $key,
             'operator' => $operator,
             'value' => $value
         ];
+    }
+
+    private function appendQueryParameterAsWhereIn($parameter, $key)
+    {
+        if (str_contains($parameter, '!=')) {
+            $type = 'NotIn';
+            $seperator = '!=';
+        } else {
+            $type = 'In';
+            $seperator = '=';
+        }
+
+        $index = null;
+        foreach ($this->queryParameters as $_index => $queryParameter) {
+            if ($queryParameter['type'] == $type && $queryParameter['key'] == $key) {
+                $index = $_index;
+                break;
+            }
+        }
+
+        if ($index !== null) {
+            $this->queryParameters[$index]['values'][] = explode($seperator, $parameter)[1];
+        } else {
+            $this->queryParameters[] = [
+                'type' => $type,
+                'key' => $key,
+                'values' => [explode($seperator, $parameter)[1]]
+            ];
+        }
     }
 
     public function hasQueryUri()
