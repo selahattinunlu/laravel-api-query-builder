@@ -38,3 +38,9 @@
 
 ### Added
 - Random sorting feature. (example: ?order_by=random)
+
+---
+
+## v1.0 (8 Oct 2015)
+
+First release.
