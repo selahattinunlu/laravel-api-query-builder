@@ -18,7 +18,8 @@ class UriParser
         'limit', 
         'page', 
         'columns', 
-        'includes'
+        'includes',
+        'appends'
     ];
 
     protected $uri;

@@ -38,6 +38,8 @@ class QueryBuilder
 
     protected $excludedParameters = [];
 
+    protected $appends = [];
+
     protected $query;
 
     protected $result;
@@ -88,7 +90,13 @@ class QueryBuilder
 
     public function get()
     {
-        return $this->query->get();
+        $result = $this->query->get();
+
+        if ($this->hasAppends()) {
+            $result = $this->addAppendsToModel($result);
+        }
+
+        return $result;
     }
 
     public function paginate()
@@ -97,7 +105,13 @@ class QueryBuilder
             throw new Exception("You can't use unlimited option for pagination", 1);
         }
 
-        return $this->basePaginate($this->limit);
+        $result = $this->basePaginate($this->limit);
+
+        if ($this->hasAppends()) {
+            $result = $this->addAppendsToModel($result);
+        }
+
+        return $result;
     }
 
     public function lists($value, $key)
@@ -234,6 +248,11 @@ class QueryBuilder
         $this->wheres = $parameters;
     }
 
+    private function setAppends($appends)
+    {
+        $this->appends = explode(',', $appends);
+    }
+
     private function addWhereToQuery($where)
     {
         extract($where);
@@ -310,6 +329,11 @@ class QueryBuilder
         return (count($this->includes) > 0);
     }
 
+    private function hasAppends()
+    {
+        return (count($this->appends) > 0);
+    }
+
     private function hasGroupBy()
     {
         return (count($this->groupBy) > 0);
@@ -350,6 +374,16 @@ class QueryBuilder
     private function customFilterName($key)
     {
         return 'filterBy' . studly_case($key);
+    }
+
+    private function addAppendsToModel($result)
+    {
+        $result->map(function($item) {
+            $item->append($this->appends);
+            return $item;
+        });
+
+        return $result;
     }
 
     /**
