@@ -3,8 +3,10 @@
 namespace Unlu\Laravel\Api;
 
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator as BasePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Unlu\Laravel\Api\Exceptions\UnknownColumnException;
@@ -95,7 +97,7 @@ class QueryBuilder
             throw new Exception("You can't use unlimited option for pagination", 1);
         }
 
-        return $this->query->paginate($this->limit);
+        return $this->basePaginate($this->limit);
     }
 
     public function lists($value, $key)
@@ -244,11 +246,13 @@ class QueryBuilder
             $operator = '';
         }
 
+        /** @var mixed $key */
         if ($this->isExcludedParameter($key)) {
             return;
         }
 
         if ($this->hasCustomFilter($key)) {
+            /** @var string $type */
             return $this->applyCustomFilter($key, $operator, $value, $type);
         }
 
@@ -256,6 +260,7 @@ class QueryBuilder
             throw new UnknownColumnException("Unknown column '{$key}'");
         }
 
+        /** @var string $type */
         if ($type == 'In') {
             $this->query->whereIn($key, $value);
         } else if ($type == 'NotIn') {
@@ -273,6 +278,8 @@ class QueryBuilder
 
         extract($order);
 
+        /** @var string $column */
+        /** @var string $direction */
         $this->query->orderBy($column, $direction);
     }
 
@@ -343,5 +350,34 @@ class QueryBuilder
     private function customFilterName($key)
     {
         return 'filterBy' . studly_case($key);
+    }
+
+    /**
+     * Paginate the given query.
+     *
+     * @param  int  $perPage
+     * @param  array  $columns
+     * @param  string  $pageName
+     * @param  int|null  $page
+     * @return Paginator
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function basePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    {
+        $page = $page ?: BasePaginator::resolveCurrentPage($pageName);
+
+        $perPage = $perPage ?: $this->model->getPerPage();
+
+        $query = $this->query->toBase();
+
+        $total = $query->getCountForPagination();
+
+        $results = $total ? $this->query->forPage($page, $perPage)->get($columns) : new Collection;
+
+        return (new Paginator($results, $total, $perPage, $page, [
+            'path' => BasePaginator::resolveCurrentPath(),
+            'pageName' => $pageName,
+        ]))->setQueryUri($this->uriParser->getQueryUri());
     }
 }

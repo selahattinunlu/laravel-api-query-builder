@@ -148,6 +148,11 @@ class UriParser
         return ($this->queryUri);
     }
 
+    public function getQueryUri()
+    {
+        return $this->queryUri;
+    }
+
     public function hasQueryParameters()
     {
         return (count($this->queryParameters) > 0);
