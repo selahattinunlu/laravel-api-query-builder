@@ -3,6 +3,7 @@
 ## v1.5.1 (21 Dec 2016)
 
 ### Fixed
+- Add support Laravel 5.0 version for pagination
 ([#13](https://github.com/selahattinunlu/laravel-api-query-builder/issues/13))
 
 ---
