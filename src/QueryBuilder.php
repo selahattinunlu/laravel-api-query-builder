@@ -403,7 +403,7 @@ class QueryBuilder
 
         $perPage = $perPage ?: $this->model->getPerPage();
 
-        $query = $this->query->toBase();
+        $query = $this->query->getQuery();
 
         $total = $query->getCountForPagination();
 
