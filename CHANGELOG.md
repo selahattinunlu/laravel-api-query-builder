@@ -1,5 +1,12 @@
 # Release Notes
 
+## v1.5.1 (21 Dec 2016)
+
+### Fixed
+([#13](https://github.com/selahattinunlu/laravel-api-query-builder/issues/13))
+
+---
+
 ## v1.5.0 (27 Nov 2016)
 
 ### Fixed
