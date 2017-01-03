@@ -285,7 +285,15 @@ class QueryBuilder
         } else if ($type == 'NotIn') {
             $this->query->whereNotIn($key, $value);
         } else {
-            $this->query->where($key, $operator, $value);
+            if ($value == '[null]') {
+                if ($operator == '=') {
+                    $this->query->whereNull($key);
+                } else {
+                    $this->query->whereNotNull($key);
+                }
+            } else {
+                $this->query->where($key, $operator, $value);
+            }
         }
     }
 
