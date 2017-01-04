@@ -1,5 +1,13 @@
 # Release Notes
 
+## v1.6.0 (04 Jan 2017)
+
+### Added
+- Add support for "null"
+([#16](https://github.com/selahattinunlu/laravel-api-query-builder/issues/16))
+
+---
+
 ## v1.5.1 (21 Dec 2016)
 
 ### Fixed
