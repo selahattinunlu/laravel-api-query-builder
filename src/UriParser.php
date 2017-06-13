@@ -28,12 +28,29 @@ class UriParser
 
     protected $queryParameters = [];
 
-    public function __construct(Request $request)
+    public function __construct(array $params = [], Request $request)
     {
         $this->request = $request;
-
-        $this->uri = $request->getRequestUri();
-
+         
+        if(count($params)>0){
+            $urlFromParams = rawurldecode(http_build_query($params));
+            $this->uri = "?".$urlFromParams;
+        }else{
+            $urlFromParams = NULL;
+        }
+        $explodeUrlFromRequest = explode('?',$request->getRequestUri()); 
+                
+        
+        if(isset($explodeUrlFromRequest[1])){
+            $urlFromRequest = rawurldecode($explodeUrlFromRequest[1]);            
+            if($urlFromParams){
+               $urlFromRequest = str_replace($urlFromParams, '', $urlFromRequest);
+               $urlFromRequest = str_replace("&&", "", $urlFromRequest);
+            }
+            $this->uri .= "&".$urlFromRequest;
+        }else{
+            $urlFromRequest = NULL;
+        }                
         $this->setQueryUri($this->uri);
 
         if ($this->hasQueryUri()) {

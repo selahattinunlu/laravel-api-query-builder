@@ -44,7 +44,7 @@ class QueryBuilder
 
     protected $result;
 
-    public function __construct(Model $model, Request $request)
+    public function __construct(Model $model, Request $request, array $params = [])
     {
         $this->orderBy = config('api-query-builder.orderBy');
 
@@ -54,7 +54,7 @@ class QueryBuilder
 
         $this->model = $model;
 
-        $this->uriParser = new UriParser($request);
+        $this->uriParser = new UriParser($params,$request);
 
         $this->query = $this->model->newQuery();
     }
