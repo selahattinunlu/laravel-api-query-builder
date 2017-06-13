@@ -1,23 +1,23 @@
-<?php 
+<?php
 
 namespace Unlu\Laravel\Api;
 
 use Illuminate\Http\Request;
 
-class UriParser 
+class UriParser
 {
     protected $request;
-    
+
     protected $pattern = '/!=|=|<=|<|>=|>/';
 
     protected $arrayQueryPattern = '/(.*)\[\]/';
 
     protected $constantParameters = [
-        'order_by', 
-        'group_by', 
-        'limit', 
-        'page', 
-        'columns', 
+        'order_by',
+        'group_by',
+        'limit',
+        'page',
+        'columns',
         'includes',
         'appends'
     ];
@@ -44,9 +44,9 @@ class UriParser
     public function queryParameter($key)
     {
         $keys = array_pluck($this->queryParameters, 'key');
-        
+
         $queryParameters = array_combine($keys, $this->queryParameters);
-       
+
         return $queryParameters[$key];
     }
 
@@ -58,11 +58,10 @@ class UriParser
     public function whereParameters()
     {
         return array_filter(
-            $this->queryParameters, 
-            function($queryParameter)
-            {
+            $this->queryParameters,
+            function ($queryParameter) {
                 $key = $queryParameter['key'];
-                return (! in_array($key, $this->constantParameters));
+                return (!in_array($key, $this->constantParameters));
             }
         );
     }
@@ -102,7 +101,7 @@ class UriParser
 
         list($key, $value) = explode($operator, $parameter);
 
-        if (! $this->isConstantParameter($key) && $this->isLikeQuery($value)) {
+        if (!$this->isConstantParameter($key) && $this->isLikeQuery($value)) {
             $operator = 'like';
             $value = str_replace('*', '%', $value);
         }
