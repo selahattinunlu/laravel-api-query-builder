@@ -23,7 +23,7 @@ class Paginator extends LengthAwarePaginator
 
         return $this;
     }
-    
+
     public function nextPageUrl()
     {
         return $this->appendQueryParametersToUrl(parent::nextPageUrl());
@@ -38,7 +38,7 @@ class Paginator extends LengthAwarePaginator
     {
         if ($url) {
             $pageParameter = explode('?', $url)[1];
-            $url = str_replace('?'. $pageParameter, '', $url);
+            $url = str_replace('?' . $pageParameter, '', $url);
             $url .= '?' . $this->queryUri . '&' . $pageParameter;
         }
 
