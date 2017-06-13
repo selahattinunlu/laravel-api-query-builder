@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 
 class UriParser
 {
+    const PATTERN = '/!=|=|<=|<|>=|>/';
+
+    const ARRAY_QUERY_PATTERN = '/(.*)\[\]/';
+
     protected $request;
-
-    protected $pattern = '/!=|=|<=|<|>=|>/';
-
-    protected $arrayQueryPattern = '/(.*)\[\]/';
 
     protected $constantParameters = [
         'order_by',
@@ -39,6 +39,16 @@ class UriParser
         if ($this->hasQueryUri()) {
             $this->setQueryParameters($this->queryUri);
         }
+    }
+
+    public static function getPattern()
+    {
+        return self::PATTERN;
+    }
+
+    public static function getArrayQueryPattern()
+    {
+        return self::ARRAY_QUERY_PATTERN;
     }
 
     public function queryParameter($key)
@@ -83,7 +93,7 @@ class UriParser
     private function appendQueryParameter($parameter)
     {
         // whereIn expression
-        preg_match($this->arrayQueryPattern, $parameter, $arrayMatches);
+        preg_match(self::ARRAY_QUERY_PATTERN, $parameter, $arrayMatches);
         if (count($arrayMatches) > 0) {
             $this->appendQueryParameterAsWhereIn($parameter, $arrayMatches[1]);
             return;
@@ -95,7 +105,7 @@ class UriParser
 
     private function appendQueryParameterAsBasicWhere($parameter)
     {
-        preg_match($this->pattern, $parameter, $matches);
+        preg_match(self::PATTERN, $parameter, $matches);
 
         $operator = $matches[0];
 
