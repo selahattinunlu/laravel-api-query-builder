@@ -1,5 +1,7 @@
 # Laravel & Lumen API Query Builder Package
 
+[![Build Status](https://travis-ci.org/mahmutbayri/laravel-api-query-builder.svg?branch=master)](https://travis-ci.org/mahmutbayri/laravel-api-query-builder)
+
 ### English
 
 [1. Introduction](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Introduction)
