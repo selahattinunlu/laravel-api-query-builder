@@ -1,5 +1,3 @@
-# Laravel & Lumen API Query Builder Package
-
 ### English
 
 [1. Introduction](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Introduction)
@@ -10,13 +8,15 @@
 
 [4. Other Examples](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Other-Examples)
 
-[5. Constant Parameters](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Constant-Parameters)
+[5. Using Custom Request](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Using-Custom-Request)
 
-[6. Methods](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Methods)
+[6. Constant Parameters](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Constant-Parameters)
 
-[7. Creating Custom Filter](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Creating-Custom-Filter)
+[7. Methods](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Methods)
 
-[8. How do exclude parameters from queries?](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/9.-How-do-exclude-parameters-from-queries%3F)
+[8. Creating Custom Filter](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Creating-Custom-Filter)
+
+[9. How do exclude parameters from queries?](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/9.-How-do-exclude-parameters-from-queries%3F)
 
 ### Türkçe
 
@@ -28,10 +28,12 @@
 
 [4. Diğer Kullanım Örnekleri](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Di%C4%9Fer-Kullan%C4%B1m-%C3%96rnekleri)
 
-[5. Sabit Parametreler](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Sabit-Parametreler)
+[5. Custom Request Kullanımı](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Custom-Request-Kullan%C4%B1m%C4%B1)
 
-[6. Methodlar](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Methodlar)
+[6. Sabit Parametreler](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Sabit-Parametreler)
 
-[7. Özel Filtre Oluşturma](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/%C3%96zel-Filtre-Olu%C5%9Fturma)
+[7. Methodlar](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Methodlar)
 
-[8. Sorgularda bazı parametreleri hariç tutmak](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/9.-Sorgularda-baz%C4%B1-parametreleri-hari%C3%A7-tutmak)
+[8. Özel Filtre Oluşturma](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/%C3%96zel-Filtre-Olu%C5%9Fturma)
+
+[9. Sorgularda bazı parametreleri hariç tutmak](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/9.-Sorgularda-baz%C4%B1-parametreleri-hari%C3%A7-tutmak)
