@@ -4,7 +4,7 @@
 
 ### Added
 - Add custom params support
-([#15](https://github.com/selahattinunlu/laravel-api-query-builder/issues/15)
+([#15](https://github.com/selahattinunlu/laravel-api-query-builder/issues/15))
 
 ---
 
