@@ -104,6 +104,10 @@ class QueryBuilder
         if (!$this->hasLimit()) {
             throw new Exception("You can't use unlimited option for pagination", 1);
         }
+        
+        if ($this->limit > config('api-query-builder.limit')) {
+ +			$this->limit = config('api-query-builder.limit');
+ +		}
 
         $result = $this->basePaginate($this->limit);
 
