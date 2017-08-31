@@ -1,5 +1,13 @@
 # Release Notes
 
+## v1.7.0 (13 June 2017)
+
+### Added
+- Add custom parameters support
+([#15](https://github.com/selahattinunlu/laravel-api-query-builder/issues/15))
+
+---
+
 ## v1.6.0 (04 Jan 2017)
 
 ### Added

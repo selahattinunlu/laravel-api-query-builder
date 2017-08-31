@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Unlu\Laravel\Api;
 
@@ -101,7 +101,7 @@ class QueryBuilder
 
     public function paginate()
     {
-        if (! $this->hasLimit()) {
+        if (!$this->hasLimit()) {
             throw new Exception("You can't use unlimited option for pagination", 1);
         }
 
@@ -136,7 +136,9 @@ class QueryBuilder
 
     private function prepareConstant($parameter)
     {
-        if (! $this->uriParser->hasQueryParameter($parameter)) return;
+        if (!$this->uriParser->hasQueryParameter($parameter)) {
+            return;
+        }
 
         $callback = [$this, $this->setterMethodName($parameter)];
 
@@ -152,7 +154,7 @@ class QueryBuilder
 
     private function setPage($page)
     {
-        $this->page = (int) $page;
+        $this->page = (int)$page;
 
         $this->offset = ($page - 1) * $this->limit;
     }
@@ -202,12 +204,12 @@ class QueryBuilder
 
     private function closureRelationColumns($columns)
     {
-        return function($q) use ($columns) {
+        return function ($q) use ($columns) {
             $q->select($columns);
         };
     }
 
-    private function setOrderBy($order) 
+    private function setOrderBy($order)
     {
         $this->orderBy = [];
 
@@ -228,7 +230,7 @@ class QueryBuilder
         $this->orderBy[] = [
             'column' => $column,
             'direction' => $direction
-        ]; 
+        ];
     }
 
     private function setGroupBy($groups)
@@ -236,14 +238,14 @@ class QueryBuilder
         $this->groupBy = array_filter(explode(',', $groups));
     }
 
-    private function setLimit($limit) 
+    private function setLimit($limit)
     {
-        $limit = ($limit == 'unlimited') ? null : (int) $limit;
+        $limit = ($limit == 'unlimited') ? null : (int)$limit;
 
         $this->limit = $limit;
     }
 
-    private function setWheres($parameters) 
+    private function setWheres($parameters)
     {
         $this->wheres = $parameters;
     }
@@ -275,7 +277,7 @@ class QueryBuilder
             return $this->applyCustomFilter($key, $operator, $value, $type);
         }
 
-        if (! $this->hasTableColumn($key)) {
+        if (!$this->hasTableColumn($key)) {
             throw new UnknownColumnException("Unknown column '{$key}'");
         }
 
@@ -327,7 +329,7 @@ class QueryBuilder
         return in_array($key, $this->excludedParameters);
     }
 
-    private function hasWheres() 
+    private function hasWheres()
     {
         return (count($this->wheres) > 0);
     }
@@ -386,7 +388,7 @@ class QueryBuilder
 
     private function addAppendsToModel($result)
     {
-        $result->map(function($item) {
+        $result->map(function ($item) {
             $item->append($this->appends);
             return $item;
         });
@@ -397,10 +399,10 @@ class QueryBuilder
     /**
      * Paginate the given query.
      *
-     * @param  int  $perPage
-     * @param  array  $columns
-     * @param  string  $pageName
-     * @param  int|null  $page
+     * @param  int $perPage
+     * @param  array $columns
+     * @param  string $pageName
+     * @param  int|null $page
      * @return Paginator
      *
      * @throws \InvalidArgumentException
@@ -411,7 +413,11 @@ class QueryBuilder
 
         $perPage = $perPage ?: $this->model->getPerPage();
 
-        $query = $this->query->getQuery();
+        if (method_exists($this->query, 'toBase')) {
+            $query = $this->query->toBase();
+        } else {
+            $query = $this->query->getQuery();
+        }
 
         $total = $query->getCountForPagination();
 

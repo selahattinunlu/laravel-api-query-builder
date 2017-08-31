@@ -1,23 +1,23 @@
-<?php 
+<?php
 
 namespace Unlu\Laravel\Api;
 
 use Illuminate\Http\Request;
 
-class UriParser 
+class UriParser
 {
-    protected $request;
-    
-    protected $pattern = '/!=|=|<=|<|>=|>/';
+    const PATTERN = '/!=|=|<=|<|>=|>/';
 
-    protected $arrayQueryPattern = '/(.*)\[\]/';
+    const ARRAY_QUERY_PATTERN = '/(.*)\[\]/';
+
+    protected $request;
 
     protected $constantParameters = [
-        'order_by', 
-        'group_by', 
-        'limit', 
-        'page', 
-        'columns', 
+        'order_by',
+        'group_by',
+        'limit',
+        'page',
+        'columns',
         'includes',
         'appends'
     ];
@@ -41,12 +41,22 @@ class UriParser
         }
     }
 
+    public static function getPattern()
+    {
+        return self::PATTERN;
+    }
+
+    public static function getArrayQueryPattern()
+    {
+        return self::ARRAY_QUERY_PATTERN;
+    }
+
     public function queryParameter($key)
     {
         $keys = array_pluck($this->queryParameters, 'key');
-        
+
         $queryParameters = array_combine($keys, $this->queryParameters);
-       
+
         return $queryParameters[$key];
     }
 
@@ -58,11 +68,10 @@ class UriParser
     public function whereParameters()
     {
         return array_filter(
-            $this->queryParameters, 
-            function($queryParameter)
-            {
+            $this->queryParameters,
+            function ($queryParameter) {
                 $key = $queryParameter['key'];
-                return (! in_array($key, $this->constantParameters));
+                return (!in_array($key, $this->constantParameters));
             }
         );
     }
@@ -84,7 +93,7 @@ class UriParser
     private function appendQueryParameter($parameter)
     {
         // whereIn expression
-        preg_match($this->arrayQueryPattern, $parameter, $arrayMatches);
+        preg_match(self::ARRAY_QUERY_PATTERN, $parameter, $arrayMatches);
         if (count($arrayMatches) > 0) {
             $this->appendQueryParameterAsWhereIn($parameter, $arrayMatches[1]);
             return;
@@ -96,13 +105,13 @@ class UriParser
 
     private function appendQueryParameterAsBasicWhere($parameter)
     {
-        preg_match($this->pattern, $parameter, $matches);
+        preg_match(self::PATTERN, $parameter, $matches);
 
         $operator = $matches[0];
 
         list($key, $value) = explode($operator, $parameter);
 
-        if (! $this->isConstantParameter($key) && $this->isLikeQuery($value)) {
+        if (!$this->isConstantParameter($key) && $this->isLikeQuery($value)) {
             $operator = 'like';
             $value = str_replace('*', '%', $value);
         }
