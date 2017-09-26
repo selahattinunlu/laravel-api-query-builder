@@ -114,6 +114,17 @@ class QueryBuilder
         return $result;
     }
 
+    public function first()
+    {
+        $result = $this->query->first();
+
+        if ($this->hasAppends()) {
+            $result = $this->addAppendsToModel($result);
+        }
+
+        return $result;
+    }
+
     public function lists($value, $key)
     {
         return $this->query->lists($value, $key);
