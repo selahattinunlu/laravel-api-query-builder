@@ -33,7 +33,11 @@ class RequestCreator
             $server = $_SERVER;
         }
 
-        $requestUri = $_SERVER['PATH_INFO'];
+        if (isset($_SERVER['PATH_INFO'])) {
+            $requestUri = $_SERVER['PATH_INFO'];
+        } else {
+            $requestUri = ENV('APP_DOMAIN', 'localhost');
+        }
         $requestQueryString = '';
 
         if (count($get) > 0) {
