@@ -21,5 +21,13 @@
         "psr-4": {
             "Unlu\\Laravel\\Api\\": "src"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+
+                "\\Unlu\\Laravel\\Api\\ApiQueryBuilderServiceProvider"
+            ]
+        }
     }
 }
