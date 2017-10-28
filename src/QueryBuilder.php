@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Unlu\Laravel\Api\Exceptions\UnknownColumnException;
 use Unlu\Laravel\Api\UriParser;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class QueryBuilder
 {
