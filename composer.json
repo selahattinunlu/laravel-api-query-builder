@@ -1,5 +1,5 @@
 {
-    "name": "robsontenorio/laravel-api-query-builder",
+    "name": "unlu/laravel-api-query-builder",
     "description": "Laravel API Query Builder Package.",
     "type": "library",
     "license": "MIT",
