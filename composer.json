@@ -10,12 +10,6 @@
             "email": "selahattin.unlu@yandex.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/robsontenorio/laravel-api-query-builder"
-        }
-    ],
     "require": {
         "php": ">=5.4",
         "illuminate/support": ">=5.0.0",
