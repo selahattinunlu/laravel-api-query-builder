@@ -1,3 +1,8 @@
+# Announcement
+I need to improve myself on Python for my new job. So, I have not time to maintain the package.
+If you want to maintain the package, you can contact to me on Twitter (@selahattinunlu) and I can give you push access.
+Otherwise, this package won't maintained anymore.
+
 ### English
 
 [1. Introduction](https://github.com/selahattinunlu/laravel-api-query-builder/wiki/Introduction)
