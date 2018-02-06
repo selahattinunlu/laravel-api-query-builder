@@ -366,7 +366,7 @@ class QueryBuilder
 
     private function hasTableColumn($column)
     {
-        return (Schema::hasColumn($this->model->getTable(), $column));
+        return (Schema::connection($this->model->getConnectionName())->hasColumn($this->model->getTable(), $column));
     }
 
     private function hasCustomFilter($key)
