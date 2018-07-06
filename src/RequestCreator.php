@@ -33,7 +33,7 @@ class RequestCreator
             $server = $_SERVER;
         }
 
-        $requestUri = $_SERVER['PATH_INFO'];
+        $requestUri = $_SERVER['REQUEST_URI'];
         $requestQueryString = '';
 
         if (count($get) > 0) {
