@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Unlu\Laravel\Api\Exceptions\UnknownColumnException;
 use Unlu\Laravel\Api\UriParser;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class QueryBuilder
 {
@@ -99,6 +100,26 @@ class QueryBuilder
         return $result;
     }
 
+    public function firstOrFail()
+    {
+        $result = $this->query->get();
+
+        if ($this->hasAppends()) {
+            $result = $this->addAppendsToModel($result);
+        }
+
+        if ($this->uriParser->hasQueryParameter('id') && count($result) == 0) {
+            throw new ModelNotFoundException();
+        }
+
+        if ($this->uriParser->hasQueryParameter('id')) {
+            $result = $result->shift();
+        }
+
+
+        return $result;
+    }
+
     public function paginate()
     {
         if (!$this->hasLimit()) {
@@ -116,7 +137,7 @@ class QueryBuilder
 
     public function lists($value, $key)
     {
-        return $this->query->lists($value, $key);
+        return $this->query->pluck($value, $key);
     }
 
     protected function prepare()
