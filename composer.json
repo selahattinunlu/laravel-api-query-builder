@@ -15,11 +15,16 @@
         }
     ],
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.2"
     },
     "autoload": {
         "psr-4": {
             "Unlu\\Laravel\\Api\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Unlu\\Laravel\\Api\\Tests" : "tests/"
         }
     }
 }
