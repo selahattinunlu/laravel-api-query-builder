@@ -409,7 +409,9 @@ class QueryBuilder
      */
     private function basePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
-        $page = $page ?: BasePaginator::resolveCurrentPage($pageName);
+        if (is_null($page)) {
+            $page = $this->page ?: BasePaginator::resolveCurrentPage($pageName);
+        }
 
         $perPage = $perPage ?: $this->model->getPerPage();
 
